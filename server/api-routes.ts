@@ -29,6 +29,22 @@ export class ApiRoutes {
 
         // The amount of Neblio required to complete the transaction in fiat price
         const nebl = nibbles / 100000000;
+
+        const label = request.params.buyer;
+        const address = await (await this.rpcClient.request('getnewaddress', [label])).result;
+
+        const transactionData = {
+            timestamp: Date.now(),
+            amount: request.params.amount,
+            rate: globalThis.price,
+            nebl_ask: nebl,
+            memo: request.params.memo,
+            seller: request.params.seller,
+            buyer: request.params.buyer,
+            address
+        };
+
+        return response.status(200).send(address);
     }
 
     public getLatestBlock = async (request: express.Request, response: express.Response) => {
