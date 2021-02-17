@@ -35,7 +35,7 @@ const getCurrentExchangeRate = async (fiat: string = 'usd') => {
 
   const price  = response.neblio[fiat];
 
-  globalThis.price = price;
+  globalThis.price = parseFloat(price);
 }
 
 getCurrentExchangeRate(process.env.base_currency);
