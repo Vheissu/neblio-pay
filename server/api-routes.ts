@@ -18,6 +18,17 @@ export class ApiRoutes {
         this.router.get(`${this.path}/getbalance`, this.getBalance);
         this.router.get(`${this.path}/getntp1balance/:identifier`, this.getNtp1Balance);
         //this.router.get(`${this.path}/getnewaddress/:label`, this.getNewAddress);
+
+        this.router.get(`${this.path}/request/:amount/:memo/:seller/:buyer`, this.requestPayment);
+    }
+
+    public requestPayment = async (request: express.Request, response: express.Response) => {
+        // Each Neblio is equal to 100 million nibbles
+        // One Nibble represents 0.00000001 NEBL (equal to Neblios eight decimal)
+        const nibbles = Math.floor((request.params.amount as any / globalThis.price) * 100000000);
+
+        // The amount of Neblio required to complete the transaction in fiat price
+        const nebl = nibbles / 100000000;
     }
 
     public getLatestBlock = async (request: express.Request, response: express.Response) => {
