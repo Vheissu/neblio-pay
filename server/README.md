@@ -26,6 +26,7 @@ The API is available by default on port 3000. The port can be changed by specify
 
 - / - Returns a default message to show you API is working
 - /price - Returns the current fiat price for Neblio
+- /convert/:amount - Converts the provided fiat amount into NEBL
 
 - /api/getlatestblock: returns the latest block height
 - /api/getblockbynumber/:blockHeight - Gets a block based on the supplied block height value

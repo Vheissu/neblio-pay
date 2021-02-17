@@ -15,6 +15,17 @@ export class SiteRoutes {
             return response.status(200).send(`${globalThis.price}`);
         });
 
+        this.router.get('/convert/:amount', (request: express.Request, response: express.Response) => {
+            // Each Neblio is equal to 100 million nibbles
+            // One Nibble represents 0.00000001 NEBL (equal to Neblios eight decimal)
+            const nibbles = Math.floor((request.params.amount as any / globalThis.price) * 100000000);
+
+            // The amount of Neblio required to complete the transaction in fiat price
+            const nebl = nibbles / 100000000;
+
+            return response.status(200).send(`${nebl} NEBL`);
+        });
+
         this.router.get(`/generate-qr/:text`, this.generateQrCode);
     }
 
