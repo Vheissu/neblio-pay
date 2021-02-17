@@ -1,5 +1,6 @@
 import { JsonRpc } from './rpc-client';
 import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
 export class ApiRoutes {
     public path = '/api';

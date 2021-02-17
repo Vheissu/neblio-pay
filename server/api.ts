@@ -3,8 +3,9 @@ import { JsonRpc } from './rpc-client';
 import { ApiRoutes } from './api-routes';
 import { SiteRoutes } from './site-routes';
 import fetch from 'node-fetch';
-import express from 'express';
+import express, { NextFunction } from 'express';
 import dotenv from 'dotenv';
+import { v4 as uuidv4 } from 'uuid';
 
 // Load environment variables
 dotenv.config();
@@ -12,6 +13,9 @@ dotenv.config();
 if (!globalThis.fetch) {
 	globalThis.fetch = fetch;
 }
+
+// Starting price is $2 per NEBL (until API sets the value)
+globalThis.price = 2.00;
 
 (async () => {
   try {
@@ -21,6 +25,12 @@ if (!globalThis.fetch) {
     const app = express();
     const port = process.env.PORT || 3000;
     app.use(express.json());
+
+    // Middleware to generate a unique ID for each request
+    app.use((request: Express.Request, response: Express.Response, next: NextFunction) => {
+      request['id'] = uuidv4();
+      next();
+    });
   
     const rpcClient = new JsonRpc(process.env.rpchost, process.env.rpcuser, process.env.rpcpass);
   
