@@ -9,6 +9,7 @@ export class ApiRoutes {
     constructor(rpcClient: JsonRpc) {
         this.rpcClient = rpcClient;
 
+        this.router.get(`${this.path}/listreceivedbyaddress`, this.listReceivedByAddress);
         this.router.get(`${this.path}/getlatestblock`, this.getLatestBlock);
         this.router.get(`${this.path}/getblockbynumber/:blocknumber`, this.getBlockByNumber);
         this.router.get(`${this.path}/getblockhash/:blocknumber`, this.getBlockHash);
@@ -16,6 +17,9 @@ export class ApiRoutes {
         this.router.get(`${this.path}/getrawtransaction/:txid`, this.getRawTransaction);
         this.router.get(`${this.path}/getrawmempool`, this.getRawMemPool);
         this.router.get(`${this.path}/getbalance`, this.getBalance);
+        this.router.get(`${this.path}/getreceivedbyaddress/:address`, this.getReceivedByAddress);
+        this.router.get(`${this.path}/signmessage/:address/:message`, this.signMessage);
+        this.router.get(`${this.path}/verifymessage/:address/:signature/:message`, this.signMessage);
         this.router.get(`${this.path}/getntp1balance/:identifier`, this.getNtp1Balance);
         //this.router.get(`${this.path}/getnewaddress/:label`, this.getNewAddress);
 
@@ -35,6 +39,8 @@ export class ApiRoutes {
 
         const transactionData = {
             timestamp: Date.now(),
+            expires: Date.now() + (15 * 60000), // 15 minutes expiry
+            status: 'new',
             amount: request.params.amount,
             rate: globalThis.price,
             nebl_ask: nebl,
@@ -45,6 +51,12 @@ export class ApiRoutes {
         };
 
         return response.status(200).send(address);
+    }
+
+    public listReceivedByAddress = async (request: express.Request, response: express.Response) => {
+        const rpcResponse = await this.rpcClient.request('listreceivedbyaddress', [0, true]);
+
+        return response.json(rpcResponse.result);
     }
 
     public getLatestBlock = async (request: express.Request, response: express.Response) => {
@@ -101,6 +113,24 @@ export class ApiRoutes {
 
     public getBalance = async (request: express.Request, response: express.Response) => {
         const rpcResponse = await this.rpcClient.request('getbalance');
+
+        return response.json(rpcResponse.result);
+    }
+
+    public getReceivedByAddress = async (request: express.Request, response: express.Response) => {
+        const rpcResponse = await this.rpcClient.request('getreceivedbyaddress', [request.params.address, 0]);
+
+        return response.json(rpcResponse.result);
+    }
+
+    public signMessage = async (request: express.Request, response: express.Response) => {
+        const rpcResponse = await this.rpcClient.request('signmessage', [request.params.address, request.params.message]);
+
+        return response.json(rpcResponse.result);
+    }
+
+    public verifyMessage = async (request: express.Request, response: express.Response) => {
+        const rpcResponse = await this.rpcClient.request('verifymessage', [request.params.address, request.params.signature, request.params.message]);
 
         return response.json(rpcResponse.result);
     }
