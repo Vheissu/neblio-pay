@@ -24,14 +24,17 @@ While PM2 is recommended for deployed environments, you can run the app locally 
 The API is available by default on port 3000. The port can be changed by specifying a `port` environment variable value (see `.env.sample`)
 ## Supported Endpoints
 
-- /neblio/getlatestblock: returns the latest block height
-- /neblio/getblockbynumber/:blockHeight - Gets a block based on the supplied block height value
-- /neblio/getblockhash/:blockHeight - Gets the hash of a blog based on supplied block height value
-- /neblio/getblock/:hash - Gets a block by its block hash value
-- /neblio/getrawtransaction/:txid - Gets a raw transaction based on supplied transaction id
-- /neblio/getrawmempool - Gets the raw mempool (unconfirmed blocks)
-- /nebliogetbalance - Gets the wallet token balance (for example, http://localhost:3000/neblio/getbalance)
-- /neblio/getntp1balance/identifier - Gets the NTP1 token balance for a token name or tokenId (for example, http://localhost:3000/neblio/getntp1balance/db)
+- / - Returns a default message to show you API is working
+- /price - Returns the current fiat price for Neblio
+
+- /api/getlatestblock: returns the latest block height
+- /api/getblockbynumber/:blockHeight - Gets a block based on the supplied block height value
+- /api/getblockhash/:blockHeight - Gets the hash of a blog based on supplied block height value
+- /api/getblock/:hash - Gets a block by its block hash value
+- /api/getrawtransaction/:txid - Gets a raw transaction based on supplied transaction id
+- /api/getrawmempool - Gets the raw mempool (unconfirmed blocks)
+- /api/getbalance - Gets the wallet token balance (for example, http://localhost:3000/neblio/getbalance)
+- /api/getntp1balance/identifier - Gets the NTP1 token balance for a token name or tokenId (for example, http://localhost:3000/nebliapio/getntp1balance/db)
 
 ## Support my work
 
