@@ -1,3 +1,4 @@
+import { Database } from './database';
 import { JsonRpc } from './rpc-client';
 import { ApiRoutes } from './api-routes';
 import { SiteRoutes } from './site-routes';
@@ -12,22 +13,31 @@ if (!globalThis.fetch) {
 	globalThis.fetch = fetch;
 }
 
-const app = express();
-const port = process.env.PORT || 3000;
+(async () => {
+  try {
+    const dbClient = new Database();
+    await dbClient.init('mongodb://localhost', 'neblio-pay');
 
-app.use(express.json());
-
-const rpcClient = new JsonRpc(process.env.rpchost, process.env.rpcuser, process.env.rpcpass);
-
-const apiRoutes = new ApiRoutes(rpcClient);
-const siteRoutes = new SiteRoutes();
-
-app.use('/', siteRoutes.router);
-app.use('/', apiRoutes.router);
-
-app.listen(port, () => {
-  console.log(`server is listening on ${port}`);
-});
+    const app = express();
+    const port = process.env.PORT || 3000;
+    app.use(express.json());
+  
+    const rpcClient = new JsonRpc(process.env.rpchost, process.env.rpcuser, process.env.rpcpass);
+  
+    const apiRoutes = new ApiRoutes(rpcClient);
+    const siteRoutes = new SiteRoutes();
+    
+    app.use('/', siteRoutes.router);
+    app.use('/', apiRoutes.router);
+    
+    app.listen(port, () => {
+      console.log(`server is listening on ${port}`);
+    });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+})();
 
 const getCurrentExchangeRate = async (fiat: string = 'usd') => {
   const request = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=neblio&vs_currencies=${fiat}`);
